@@ -25,9 +25,11 @@ public class EmployeeValidator {
                 result = value.matches(EmployeeValidator.USERNAME);
                 break;
             case "firstname":
+                Utils.UpperFirstCharacter(value);
                 result = value.matches(EmployeeValidator.FIRSTNAME);
                 break;
             case "lastname":
+                Utils.UpperFirstCharacter(value);
                 result = value.matches(EmployeeValidator.LASTNAME);
                 break;
             case "password":

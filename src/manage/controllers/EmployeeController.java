@@ -5,21 +5,21 @@
  */
 package manage.controllers;
 
-import java.io.IOException;
 import manage.model.Employee;
 import manage.model.IEmployee;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import manage.model.Utils;
 /**
  *
  * @author 01duc
  */
 public class EmployeeController extends ArrayList<Employee> implements IEmployee{
-
-    @Override
+    public static Comparator<Employee> compareEmployeeByFirstName = Comparator.comparing(Employee::getFirstName);
+    
+     @Override
     public boolean addEmployee(String username, String firstName, String lastName, String password, String phone, String email) {
         boolean result = false;
         Employee employee = new Employee(username, firstName, lastName, password, phone, email);
@@ -34,15 +34,38 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
     }
 
     @Override
-    public Employee updateDeleteEmployee() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean updateEmployee(Employee employee, String username, String firstName, String lastName, String password, String phone, String email) {
+        boolean result = false; 
+        try {
+            employee.setUsername(username);
+            employee.setFirstName(firstName);
+            employee.setLastName(lastName);
+            employee.setPassword(password);
+            employee.setPhone(phone);
+            employee.setEmail(email);
+            
+            result = true;
+        } catch (Exception e) {
+        }
+        return result;       
+    }
+    
+    @Override
+    public boolean deleteEmployee(Employee employee) {
+        boolean result = false;
+        try {
+            this.remove(employee);
+            result = true;
+        } catch (Exception e) {
+        }
+        return result;
     }
 
     @Override
     public Employee checkExit(String username) {
         Employee cus = new Employee();
         for (Employee i : this) {;
-            if (i.getUsername().equalsIgnoreCase(username)) {
+            if (i.getUsername().equals(username)) {
                 cus = i;
                 break;
             }
@@ -64,20 +87,6 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
     }
 
     @Override
-    public void displayAllEmployee() {
-        System.out.printf("%-15s %-15s %-15s %-15s %-30s %-20s\n", 
-            "Username", "First Name", "Last Name", "Phone", "Email", "Password");
-        
-        for (int i = 0; i < 110; i++) {
-            System.out.print("-");
-        }
-        System.out.println("");
-        for (Employee i : this) {
-            System.out.println(i.displayEmployee());
-        }
-    }
-
-    @Override
     public String passwordEncryption() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -92,5 +101,9 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
         List<Employee> list = Utils.readListFromTextFile("Employee.txt");
         this.addAll(list); // this là một danh sách Employee
     }
+
+    public void sortbyFirdtname() {
+        Collections.sort(this, EmployeeController.compareEmployeeByFirstName);
+    }    
 
 }

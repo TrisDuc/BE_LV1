@@ -40,6 +40,22 @@ public class Utils {
         return result;
     }
     
+    public static String getStringEnableEnter(String value) {
+        boolean check = true;
+        String result = "";
+        do {
+            Scanner sc = new Scanner(System.in);
+            System.out.print(value);
+            result = sc.nextLine();
+            if (result.isEmpty()) {
+                return "";
+            } else {
+                check = false;
+            }
+        } while (check);
+        return result;
+    }
+    
     public static int getInt(String value, int min, int max) {
         boolean check = true;
         int number = 0;
@@ -69,6 +85,23 @@ public class Utils {
         return result;
     }
     
+    public static String updateValidInfo(String value, String cases, String oldAns) {
+        String result = "";
+        do {
+            result = getStringEnableEnter(value);
+            if (result.equals("")) {
+                return oldAns;
+            } else {
+                if (EmployeeValidator.isValid(result, cases)) {
+                    break;
+                } else {
+                    System.out.println("Invalid value for " + cases);
+                }
+            }
+        } while (true);
+        return result;
+    }
+    
     public static void displayStatus(boolean status, String successMsg, String failedMsg) {
         if (status) {
             System.out.println(successMsg);
@@ -79,24 +112,25 @@ public class Utils {
     
     public static boolean confirmYesNo(String ask) {
         String answer = getString(ask);
-        boolean result = false;
+        boolean result = true;
         if ("y".equalsIgnoreCase(answer)) {
-            result = true;
+            result = false;
         }
         return result;
     }
     
     public static boolean askForRetry(boolean result, String successedMsg, String failedMsg) {
         displayStatus(result, successedMsg, failedMsg);
-        boolean check = confirmYesNo("Do you want to return mennu? (y/n)");
+        boolean check = confirmYesNo("Do you want to return menu? (y/n)");
         return check;
     }
     
     public static boolean writeListToTextFile(String path, List<Employee> list) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
             for (Employee emp : list) {
+                String hashedPassword = PasswordUtils.encryptSHA256(emp.getPassword());
                 String line = String.join(",", emp.getUsername(), emp.getFirstName(), emp.getLastName(),
-                                           emp.getPassword(), emp.getPhone(), emp.getEmail());
+                                           hashedPassword, emp.getPhone(), emp.getEmail());
                 writer.write(line);
                 writer.newLine();
             }
@@ -123,5 +157,10 @@ public class Utils {
         }
         return list;
     }
-
+    
+    public static String UpperFirstCharacter(String value) {
+        return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
+    }
+    
+    
 }

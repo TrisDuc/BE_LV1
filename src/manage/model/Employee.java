@@ -89,7 +89,13 @@ public class Employee {
     }
     
     public String displayEmployee() {
-        return String.format("%-15s | %-15s | %-15s | %-15s | %-25s", this.username, this.firstName, this.lastName, this.password, this.email);
+        return String.format("%-10s | %-12s | %-12s | %-15s | %-25s |",
+            this.getUsername(),
+            this.getFirstName(),
+            this.getLastName(),
+            this.getPhone(),
+            this.getEmail()
+        );
     }
     
 }

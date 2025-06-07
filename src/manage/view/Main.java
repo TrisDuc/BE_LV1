@@ -37,7 +37,6 @@ public class Main {
         EmployeeController employeeController = new EmployeeController();
         employeeView.init();
         
-        employeeController.readEmployee();
         boolean condition = true;
         do {      
             menu.showMenu();
@@ -60,7 +59,25 @@ public class Main {
                     } while (repeat);
                     break;
                 case 4:
-                    employeeView.printAllEmployee();
+                    do {
+                        repeat = Utils.askForRetry(employeeView.updateEmployee(), "", "Username does not exist");
+                    } while (repeat);
+                    break;
+                case 5:
+                    do {
+                        repeat = Utils.askForRetry(employeeView.deleteEmployee(), "", "Username does not exist");
+                    } while (repeat);
+                    break;
+                case 6:
+                    Utils.writeListToTextFile("Employee.txt", employeeController);
+                case 7:
+                    Utils.readListFromTextFile("Employee.txt");
+                    employeeView.sortByFirstName();     
+                    employeeView.displayAllEmployee();
+                    break;
+                case 8:
+                    employeeView.displayAllEmployee();
+                    break;
             }
         } while (condition);
         

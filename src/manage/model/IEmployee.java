@@ -14,14 +14,14 @@ import java.util.List;
 public interface IEmployee {
     public boolean addEmployee(String username, String firstName, String lastName, String password, String phone, String email);
     
-    public Employee updateDeleteEmployee();
+    public boolean updateEmployee(Employee employee, String username, String firstName, String lastName, String password, String phone, String email);
+    
+    public boolean deleteEmployee(Employee employee);
     
     public Employee checkExit(String username);
     
     public List searchEmployeeByName(String value);
         
-    public void displayAllEmployee();
-    
     public String passwordEncryption();
     
 }
