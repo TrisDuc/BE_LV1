@@ -12,11 +12,11 @@ import java.util.List;
  * @author 01duc
  */
 public interface IEmployee {
-    public boolean addEmployee(String username, String firstName, String lastName, String password, String phone, String email);
+    public boolean addEmployee(Employee employee);
     
     public boolean updateEmployee(Employee employee, String username, String firstName, String lastName, String password, String phone, String email);
     
-    public boolean deleteEmployee(Employee employee);
+    public boolean deleteEmployee(int indexToDelete);
     
     public Employee checkExit(String username);
     

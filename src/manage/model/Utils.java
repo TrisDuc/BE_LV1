@@ -72,35 +72,52 @@ public class Utils {
         return number;
     }
     
-    public static String checkValidInfo(String value, String cases) {
-        String result = "";
-        do {            
-            result = getString(value);
-            if (EmployeeValidator.isValid(result, cases)) {
-                break;
-            } else {
-                System.out.println("Invalid value for " + cases);
-            }
-        } while (true);
-        return result;
-    }
-    
-    public static String updateValidInfo(String value, String cases, String oldAns) {
-        String result = "";
-        do {
-            result = getStringEnableEnter(value);
-            if (result.equals("")) {
-                return oldAns;
-            } else {
-                if (EmployeeValidator.isValid(result, cases)) {
-                    break;
-                } else {
-                    System.out.println("Invalid value for " + cases);
-                }
-            }
-        } while (true);
-        return result;
-    }
+//    public static String checkValidInfo() {
+//        Employee employee = EmployeeValidator.isValid();
+//        if (!EmployeeValidator.isValid(employee.getUsername(), "username")) {
+//            JOptionPane.showMessageDialog(null, "Username must be at least 5 characters and contain no spaces.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//
+//        if (!EmployeeValidator.isValid(employee.getFirstName(), "firstname")) {
+//            JOptionPane.showMessageDialog(null, "First Name must be 2-25 letters only.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//
+//        if (!EmployeeValidator.isValid(employee.getLastName(), "lastname")) {
+//            JOptionPane.showMessageDialog(null, "Last Name must be 2-25 letters only.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//
+//        // Note: You generally don't want to show password errors directly for security reasons.
+//        // If this is for initial registration, it might be appropriate.
+//        if (!EmployeeValidator.isValid(employee.getPassword(), "password")) {
+//            JOptionPane.showMessageDialog(null, "Password must be at least 6 characters and contain no spaces.", "Validation Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//
+//        if (!EmployeeValidator.isValid(employee.getPhone(), "phone")) {
+//            JOptionPane.showMessageDialog(null, "Phone number must be 10 digits and follow Vietnamese format (e.g., 0912345678 or +84912345678).", "Validation Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//
+//        if (!EmployeeValidator.isValid(employee.getEmail(), "email")) {
+//            JOptionPane.showMessageDialog(null, "Invalid email format (e.g., example@domain.com).", "Validation Error", JOptionPane.ERROR_MESSAGE);
+//        }   
+//        return "hello";
+//    }
+//    
+//    public static String updateValidInfo(String value, String cases, String oldAns) {
+//        String result = "";
+//        do {
+//            result = getStringEnableEnter(value);
+//            if (result.equals("")) {
+//                return oldAns;
+//            } else {
+//                if (EmployeeValidator.isValid(result, cases)) {
+//                    break;
+//                } else {
+//                    System.out.println("Invalid value for " + cases);
+//                }
+//            }
+//        } while (true);
+//        return result;
+//    }
     
     public static void displayStatus(boolean status, String successMsg, String failedMsg) {
         if (status) {
@@ -162,5 +179,9 @@ public class Utils {
         return value.substring(0, 1).toUpperCase() + value.substring(1).toLowerCase();
     }
     
+    public static String trim(String value) {
+        return (value != null) ? value.trim() : "";
+    }
     
+
 }

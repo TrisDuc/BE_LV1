@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import javax.swing.JOptionPane;
 import manage.model.Utils;
 /**
  *
@@ -19,12 +20,12 @@ import manage.model.Utils;
 public class EmployeeController extends ArrayList<Employee> implements IEmployee{
     public static Comparator<Employee> compareEmployeeByFirstName = Comparator.comparing(Employee::getFirstName);
     
-     @Override
-    public boolean addEmployee(String username, String firstName, String lastName, String password, String phone, String email) {
+    @Override
+    public boolean addEmployee(Employee employee) {
         boolean result = false;
-        Employee employee = new Employee(username, firstName, lastName, password, phone, email);
         if (this.contains(employee)) {
-            System.out.println("Duplicate Employee");
+            JOptionPane.showMessageDialog(null, "Duplicated Employee", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(result);
             return result;
         } else {
             result = true;
@@ -51,10 +52,10 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
     }
     
     @Override
-    public boolean deleteEmployee(Employee employee) {
+    public boolean deleteEmployee(int indexToDelete) {
         boolean result = false;
         try {
-            this.remove(employee);
+            this.remove(indexToDelete);
             result = true;
         } catch (Exception e) {
         }
@@ -105,5 +106,5 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
     public void sortbyFirdtname() {
         Collections.sort(this, EmployeeController.compareEmployeeByFirstName);
     }    
-
+    
 }

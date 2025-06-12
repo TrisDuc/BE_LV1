@@ -23,41 +23,41 @@ public class EmployeeView {
         employeeController.readEmployee();
     }
     
-    public boolean addEmployee() {
-        String username = Utils.checkValidInfo("Please input username: ", "username");
-        String firstname = Utils.checkValidInfo("Please input firstname: ", "firstname");
-        String lastname = Utils.checkValidInfo("Please input lastname: ", "lastname");
-        String password = Utils.checkValidInfo("Please input password: ", "password");
-        String phone = Utils.checkValidInfo("Please input phone: ", "phone");
-        String email = Utils.checkValidInfo("Please input email: ", "email");
-        
-        return employeeController.addEmployee(username, firstname, lastname, password, phone, email);
-    }
-    
-    public boolean updateEmployee() {
-        this.displayAllEmployee();
-        String usName = Utils.getString("Input username to update: ");
-        Employee employee = employeeController.checkExit(usName);
-        if (employee.getUsername() == null) {
-            return false;
-        } else {
-            String username = Utils.updateValidInfo("Please input username: ", "username", employee.getUsername());
-            String firstname = Utils.updateValidInfo("Please input firstname: ", "firstname", employee.getFirstName());
-            String lastname = Utils.updateValidInfo("Please input lastname: ", "lastname", employee.getLastName());
-            String password = Utils.updateValidInfo("Please input password: ", "password", employee.getPassword());
-            String phone = Utils.updateValidInfo("Please input phone: ", "phone", employee.getPassword());
-            String email = Utils.updateValidInfo("Please input email: ", "email", employee.getEmail());
-            
-            return employeeController.updateEmployee(employee, username, firstname, lastname, password, phone, email);
-        }
-    }
-    
-    public boolean deleteEmployee() {
-        this.displayAllEmployee();
-        String username = Utils.getString("Input username to delete: ");
-        Employee employee = employeeController.checkExit(username);
-        return employeeController.deleteEmployee(employee);
-    }
+//    public boolean addEmployee() {
+//        String username = Utils.checkValidInfo("Please input username: ", "username");
+//        String firstname = Utils.checkValidInfo("Please input firstname: ", "firstname");
+//        String lastname = Utils.checkValidInfo("Please input lastname: ", "lastname");
+//        String password = Utils.checkValidInfo("Please input password: ", "password");
+//        String phone = Utils.checkValidInfo("Please input phone: ", "phone");
+//        String email = Utils.checkValidInfo("Please input email: ", "email");
+//        
+//        return employeeController.addEmployee(username, firstname, lastname, password, phone, email);
+//    }
+//    
+//    public boolean updateEmployee() {
+//        this.displayAllEmployee();
+//        String usName = Utils.getString("Input username to update: ");
+//        Employee employee = employeeController.checkExit(usName);
+//        if (employee.getUsername() == null) {
+//            return false;
+//        } else {
+//            String username = Utils.updateValidInfo("Please input username: ", "username", employee.getUsername());
+//            String firstname = Utils.updateValidInfo("Please input firstname: ", "firstname", employee.getFirstName());
+//            String lastname = Utils.updateValidInfo("Please input lastname: ", "lastname", employee.getLastName());
+//            String password = Utils.updateValidInfo("Please input password: ", "password", employee.getPassword());
+//            String phone = Utils.updateValidInfo("Please input phone: ", "phone", employee.getPassword());
+//            String email = Utils.updateValidInfo("Please input email: ", "email", employee.getEmail());
+//            
+//            return employeeController.updateEmployee(employee, username, firstname, lastname, password, phone, email);
+//        }
+//    }
+//    
+//    public boolean deleteEmployee() {
+//        this.displayAllEmployee();
+//        String username = Utils.getString("Input username to delete: ");
+//        Employee employee = employeeController.checkExit(username);
+//        return employeeController.deleteEmployee(employee);
+//    }
     
     
     public boolean checkExit() {

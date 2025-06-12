@@ -5,6 +5,8 @@
  */
 package manage.model;
 
+import java.util.Objects;
+
 /**
  *
  * @author 01duc
@@ -86,6 +88,28 @@ public class Employee {
              + "Password       : " + this.getPassword() + "\n"
              + "Phone number   : " + this.getPhone() + "\n"
              + "Email          : " + this.getEmail();
+    }
+    // *** PHẦN QUAN TRỌNG NHẤT: OVERRIDE equals() và hashCode() ***
+    @Override
+    public boolean equals(Object o) {
+        // Nếu cùng một đối tượng trong bộ nhớ, chúng bằng nhau
+        if (this == o) return true;
+        // Nếu đối tượng truyền vào null hoặc không cùng lớp, chúng không bằng nhau
+        if (o == null || getClass() != o.getClass()) return false;
+
+        // Ép kiểu đối tượng truyền vào thành Employee
+        Employee employee = (Employee) o;
+
+        // So sánh các trường để xác định sự trùng lặp.
+        return username.equals(employee.username) && email.equals(employee.email);
+    }
+
+    @Override
+    public int hashCode() {
+        // hashCode phải nhất quán với equals.
+        // Nếu hai đối tượng bằng nhau theo equals(), chúng phải có cùng hashCode().
+        // Nếu bạn so sánh bằng username và email:
+        return Objects.hash(username, email); // Requires java.util.Objects
     }
     
     public String displayEmployee() {
