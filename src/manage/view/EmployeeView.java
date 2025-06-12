@@ -23,17 +23,7 @@ public class EmployeeView {
         employeeController.readEmployee();
     }
     
-//    public boolean addEmployee() {
-//        String username = Utils.checkValidInfo("Please input username: ", "username");
-//        String firstname = Utils.checkValidInfo("Please input firstname: ", "firstname");
-//        String lastname = Utils.checkValidInfo("Please input lastname: ", "lastname");
-//        String password = Utils.checkValidInfo("Please input password: ", "password");
-//        String phone = Utils.checkValidInfo("Please input phone: ", "phone");
-//        String email = Utils.checkValidInfo("Please input email: ", "email");
-//        
-//        return employeeController.addEmployee(username, firstname, lastname, password, phone, email);
-//    }
-//    
+
 //    public boolean updateEmployee() {
 //        this.displayAllEmployee();
 //        String usName = Utils.getString("Input username to update: ");
@@ -51,9 +41,8 @@ public class EmployeeView {
 //            return employeeController.updateEmployee(employee, username, firstname, lastname, password, phone, email);
 //        }
 //    }
-//    
+    
 //    public boolean deleteEmployee() {
-//        this.displayAllEmployee();
 //        String username = Utils.getString("Input username to delete: ");
 //        Employee employee = employeeController.checkExit(username);
 //        return employeeController.deleteEmployee(employee);
@@ -96,7 +85,7 @@ public class EmployeeView {
         }
     }
         
-    public void displayAllEmployee() {
+    public void displayAllEmployee(EmployeeController employeeController) {
         String format = "| %-3s | %-10s | %-12s | %-12s | %-15s | %-25s |%n";
 
         // In tiêu đề

@@ -15,19 +15,71 @@ import javax.swing.table.DefaultTableModel;
 import manage.controllers.EmployeeController;
 import manage.model.Employee;
 import manage.model.Utils;
-
+import manage.model.CustomTableEmployee;
+import manage.model.TableEditListener; 
 /**
  *
  * @author 01duc
  */
-public class Manageuser extends javax.swing.JFrame {
+public class Manageuser extends javax.swing.JFrame implements TableEditListener{
     EmployeeController employeeController = new EmployeeController();
-    EmployeeView employeeView = new EmployeeView();
+    
+    private CustomTableEmployee customTableModel;
     
     public Manageuser() {
-        initComponents(); // Initialize all UI components first
+        initComponents(); // Khởi tạo tất cả các thành phần UI trước
         setLocationRelativeTo(null);
-        loadEmployeeData(); // Call load data after components are initialized
+        
+        // QUAN TRỌNG: Đặt customTableModel thành model của JTable của bạn
+        // Dòng này phải đứng SAU initComponents() đã đặt model
+        customTableModel = (CustomTableEmployee) tableEmployee.getModel();
+        // Đăng ký thể hiện Manageuser này làm listener cho các chỉnh sửa bảng
+        customTableModel.setTableEditListener(this);
+        
+        loadEmployeeData(); // Gọi tải dữ liệu sau khi các thành phần được khởi tạo
+    }
+
+    // Phương thức này sẽ được CustomTableEmployee gọi khi một ô được chỉnh sửa thành công
+    @Override
+    public void onCellEdited(int row, int column, Object newValue) {
+        // 1. Lấy đối tượng Employee gốc từ danh sách của employeeController
+        // Lưu ý: Chỉ số hàng trong JTable tương ứng với chỉ số trong danh sách của employeeController
+        if (row >= 0 && row < employeeController.size()) {
+            Employee employeeToUpdate = employeeController.get(row);
+            String columnName = customTableModel.getColumnName(column); // Lấy tên cột
+
+            // 2. Cập nhật trường cụ thể của đối tượng Employee
+            switch (columnName) {
+                case "Username":
+                    employeeToUpdate.setUsername((String) newValue);
+                    break;
+                case "First Name":
+                    employeeToUpdate.setFirstName((String) newValue);
+                    break;
+                case "Last Name":
+                    employeeToUpdate.setLastName((String) newValue);
+                    break;
+                case "Phone":
+                    employeeToUpdate.setPhone((String) newValue);
+                    break;
+                case "Email":
+                    employeeToUpdate.setEmail((String) newValue);
+                    break;
+                // Thêm các trường hợp cho các cột có thể chỉnh sửa khác nếu cần
+                default:
+                    // Nếu bạn có các cột không chuẩn, hãy xử lý chúng ở đây hoặc không làm gì
+                    break;
+            }
+            
+            // Tùy chọn: Bạn có thể muốn cung cấp phản hồi ngay lập tức cho người dùng
+            // JOptionPane.showMessageDialog(this, "Dữ liệu nhân viên đã được cập nhật cục bộ cho " + columnName + ".", "Cập nhật thành công", JOptionPane.INFORMATION_MESSAGE);
+            // Đây chỉ là một bản cập nhật cục bộ. Việc lưu tệp thực tế xảy ra khi nút "Save" được nhấp.
+
+            // Bản thân bảng đã được cập nhật bởi setValueAt, vì vậy không cần gọi updateDataToTable() ở đây
+            // trừ khi bạn có sự phụ thuộc lẫn nhau phức tạp.
+        } else {
+            System.err.println("Lỗi: Chỉ số hàng nằm ngoài giới hạn trong employeeController trong quá trình cập nhật.");
+        }
     }
 
     // HÀM ĐỂ NẠP DỮ LIỆU VÀO JTABLE
@@ -97,31 +149,20 @@ public class Manageuser extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
 
-        tableEmployee.setModel(new javax.swing.table.DefaultTableModel(
+        tableEmployee.setModel(new manage.model.CustomTableEmployee( // <-- Use your custom model here
             new Object [][] {
-
+                // You can leave this empty, as loadEmployeeData() will populate it
             },
             new String [] {
                 "ID", "Username", "First Name", "Last Name", "Phone", "Email"
             }
-        ) {
-            Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
-            };
-
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-            }
-        });
+        ));
         tableEmployee.addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
                 tableEmployeeComponentShown(evt);
             }
         });
         jScrollPane1.setViewportView(tableEmployee);
-        if (tableEmployee.getColumnModel().getColumnCount() > 0) {
-            tableEmployee.getColumnModel().getColumn(0).setPreferredWidth(1);
-        }
 
         btnAdd.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/add.png"))); // NOI18N
@@ -209,7 +250,11 @@ public class Manageuser extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
       
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        employeeController.writeDataToFile();
+        int save = JOptionPane.showConfirmDialog(null, "Do you want to save?", "Selection", JOptionPane.YES_NO_OPTION);
+        if (save == 0) {
+            employeeController.writeDataToFile();
+            JOptionPane.showMessageDialog(this, "Save successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed

@@ -107,4 +107,9 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
         Collections.sort(this, EmployeeController.compareEmployeeByFirstName);
     }    
     
+    public List<Employee> updateData(int indexrow) {
+        this.get(indexrow).getEmail();
+        return this;
+    }
+    
 }

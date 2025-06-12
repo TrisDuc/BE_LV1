@@ -77,49 +77,11 @@
       <SubComponents>
         <Component class="javax.swing.JTable" name="tableEmployee">
           <Properties>
-            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="6" rowCount="0">
-                <Column editable="true" title="ID" type="java.lang.Integer"/>
-                <Column editable="true" title="Username" type="java.lang.String"/>
-                <Column editable="true" title="First Name" type="java.lang.String"/>
-                <Column editable="true" title="Last Name" type="java.lang.String"/>
-                <Column editable="true" title="Phone" type="java.lang.String"/>
-                <Column editable="true" title="Email" type="java.lang.String"/>
-              </Table>
+            <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new manage.model.CustomTableEmployee( // &lt;-- Use your custom model here&#xd;&#xa;    new Object [][] {&#xd;&#xa;        // You can leave this empty, as loadEmployeeData() will populate it&#xd;&#xa;    },&#xd;&#xa;    new String [] {&#xd;&#xa;        &quot;ID&quot;, &quot;Username&quot;, &quot;First Name&quot;, &quot;Last Name&quot;, &quot;Phone&quot;, &quot;Email&quot;&#xd;&#xa;    }&#xd;&#xa;)" type="code"/>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
-              <TableColumnModel selectionModel="0">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="true">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
-              </TableColumnModel>
+              <TableColumnModel selectionModel="0"/>
             </Property>
             <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
               <TableHeader reorderingAllowed="true" resizingAllowed="true"/>
@@ -128,6 +90,9 @@
           <Events>
             <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="tableEmployeeComponentShown"/>
           </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable()"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
