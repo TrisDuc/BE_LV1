@@ -91,12 +91,11 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
         model.setRowCount(0);
 
         employeeController.readEmployee();
-        
+
         // Populate the model with employee data
-        int idCounter = 1; // Counter to generate sequential IDs
         for (Employee emp : employeeController) {
             Object[] row = {
-                idCounter++,        // Auto-incrementing ID
+                emp.getID(),
                 emp.getUsername(),
                 emp.getFirstName(),
                 emp.getLastName(),
@@ -115,10 +114,9 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
         model.setRowCount(0);
 
         // Populate the model with employee data
-        int idCounter = 1; // Counter to generate sequential IDs
         for (Employee emp : employeeController) {
             Object[] row = {
-                idCounter++,        // Auto-incrementing ID
+                emp.getID(),
                 emp.getUsername(),
                 emp.getFirstName(),
                 emp.getLastName(),
@@ -127,7 +125,29 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
             };
             model.addRow(row); // Add the row to the table model
         }
-    }
+    } 
+    
+    private void updateSearchDataToTable(List<Employee> employees) {
+        // Get the model that was already set up by initComponents()
+        DefaultTableModel model = (DefaultTableModel) tableEmployee.getModel();
+
+        // Clear existing rows in the table
+        model.setRowCount(0);
+
+        // Populate the model with employee data
+        for (Employee emp : employees) {
+            Object[] row = {
+                emp.getID(),
+                emp.getUsername(),
+                emp.getFirstName(),
+                emp.getLastName(),
+                emp.getPhone(),
+                emp.getEmail()
+            };
+            model.addRow(row); // Add the row to the table model
+        }
+    } 
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -145,6 +165,8 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
         btnSave = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        txtNameSearch = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
@@ -209,32 +231,49 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
             }
         });
 
+        jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
+        jButton1.setText("Search");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        txtNameSearch.setFont(new java.awt.Font("Tahoma", 2, 14)); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAdd)
-                        .addGap(47, 47, 47)
-                        .addComponent(btnDelete)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnReset)
-                        .addGap(54, 54, 54)
-                        .addComponent(btnSave)
-                        .addGap(43, 43, 43)
-                        .addComponent(btnLogout))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAdd)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(btnDelete)
+                            .addGap(43, 43, 43)
+                            .addComponent(btnReset)
+                            .addGap(54, 54, 54)
+                            .addComponent(btnSave)
+                            .addGap(47, 47, 47)
+                            .addComponent(btnLogout))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton1))
+                    .addComponent(txtNameSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 670, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(71, 71, 71)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 550, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(61, 61, 61)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNameSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd)
                     .addComponent(btnDelete)
@@ -276,16 +315,17 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
         }
 
         // Lấy Username từ cột "Username" 
-        String usernameToDelete = (String) tableEmployee.getModel().getValueAt(selectedRow, 1); // Cột Username là chỉ số 1
-
+        String idToDelete = (String) tableEmployee.getModel().getValueAt(selectedRow, 0);
+        String usernameToDelete = (String) tableEmployee.getModel().getValueAt(selectedRow, 1); // Lấy username để hiển thị trong thông báo
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete employee: " + usernameToDelete + "?",
+                "Are you sure you want to delete employee: " + usernameToDelete + "(ID: " + idToDelete + ")?",
                 "Confirm Delete", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean deleted = employeeController.deleteEmployee(selectedRow);
+            boolean deleted = employeeController.deleteEmployee(Integer.parseInt(idToDelete));
 
             if (deleted) {
+                employeeController.changeOrder(Integer.parseInt(idToDelete));
                 JOptionPane.showMessageDialog(this, "Employee '" + usernameToDelete + "' deleted successfully!", "Deletion Successful", JOptionPane.INFORMATION_MESSAGE);
                 updateDataToTable(employeeController); // Cập nhật lại bảng sau khi xóa
             } else {
@@ -311,6 +351,11 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
         }
     }
     
+    public int getNumEmployee() {
+        return employeeController.size();
+    }
+    
+    
     private void tableEmployeeComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_tableEmployeeComponentShown
         // TODO add your handling code here:
         try {
@@ -319,6 +364,20 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
             JOptionPane.showConfirmDialog(null, e);
         }
     }//GEN-LAST:event_tableEmployeeComponentShown
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String keywords = txtNameSearch.getText();
+        
+        List<Employee> searchList = employeeController.searchEmployeeByName(keywords);
+        
+        if (searchList.isEmpty()) {
+            System.out.println("Empty");
+            updateDataToTable(employeeController);
+        } else {
+            updateSearchDataToTable(searchList);
+        } 
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -358,7 +417,9 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tableEmployee;
+    private javax.swing.JTextField txtNameSearch;
     // End of variables declaration//GEN-END:variables
 }

@@ -10,6 +10,7 @@ import manage.model.IEmployee;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JOptionPane;
 import manage.model.Utils;
@@ -52,34 +53,25 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
     }
     
     @Override
-    public boolean deleteEmployee(int indexToDelete) {
-        boolean result = false;
-        try {
-            this.remove(indexToDelete);
-            result = true;
-        } catch (Exception e) {
-        }
-        return result;
-    }
-
-    @Override
-    public Employee checkExit(String username) {
-        Employee cus = new Employee();
-        for (Employee i : this) {;
-            if (i.getUsername().equals(username)) {
-                cus = i;
-                break;
+    public boolean deleteEmployee(int idToDelete) {
+        Iterator<Employee> iterator = this.iterator();
+        while (iterator.hasNext()) {
+            Employee emp = iterator.next();
+            if (Integer.parseInt(emp.getID()) == idToDelete) { // So sánh ID
+                iterator.remove(); // Xóa đối tượng Employee
+                return true; // Đã xóa thành công
             }
         }
-        return cus;
+        return false; // Không tìm thấy Employee với ID này
     }
 
+
     @Override
-    public List searchEmployeeByName(String value) {
+    public List<Employee> searchEmployeeByName(String value) {
         List arr = new ArrayList();
         for (Employee i : this) {
-            String liLaName = i.getFirstName().toLowerCase() + i.getLastName().toLowerCase();
-            if (liLaName.contains(value)) {
+            String firstLastName = i.getFirstName().toLowerCase() + i.getLastName().toLowerCase();
+            if (firstLastName.contains(value)) {
                 arr.add(i);
             }
         }
@@ -107,9 +99,11 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
         Collections.sort(this, EmployeeController.compareEmployeeByFirstName);
     }    
     
-    public List<Employee> updateData(int indexrow) {
-        this.get(indexrow).getEmail();
-        return this;
+    public void changeOrder(int idRemoved) {
+        System.out.println(this.size());
+        for (int i = idRemoved - 1; i < this.size(); i++) {
+            this.get(i).setID(String.format("%s", i + 1));
+        }
     }
     
 }

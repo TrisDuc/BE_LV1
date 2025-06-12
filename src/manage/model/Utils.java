@@ -146,7 +146,7 @@ public class Utils {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
             for (Employee emp : list) {
                 String hashedPassword = PasswordUtils.encryptSHA256(emp.getPassword());
-                String line = String.join(",", emp.getUsername(), emp.getFirstName(), emp.getLastName(),
+                String line = String.join(",", emp.getID(), emp.getUsername(), emp.getFirstName(), emp.getLastName(),
                                            hashedPassword, emp.getPhone(), emp.getEmail());
                 writer.write(line);
                 writer.newLine();
@@ -164,8 +164,8 @@ public class Utils {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length == 6) {
-                    Employee emp = new Employee(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
+                if (parts.length == 7) {
+                    Employee emp = new Employee(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
                     list.add(emp);
                 }
             }

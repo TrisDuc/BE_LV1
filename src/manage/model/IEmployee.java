@@ -18,8 +18,6 @@ public interface IEmployee {
     
     public boolean deleteEmployee(int indexToDelete);
     
-    public Employee checkExit(String username);
-    
     public List searchEmployeeByName(String value);
         
     public String passwordEncryption();

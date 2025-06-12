@@ -200,7 +200,7 @@ public class addNewEmployee extends javax.swing.JFrame {
         String password = txtPassword.getText();
         String phoneNumber = txtPhoneNumber.getText();
         String email = txtEmail.getText();
-        Employee employee = EmployeeValidator.isValid(username, firstname, lastname, password, phoneNumber, email);
+        Employee employee = EmployeeValidator.isValid(String.format("%s", parentFrame.getNumEmployee()), username, firstname, lastname, password, phoneNumber, email);
 
         if (employee != null) {
             // Giả sử employeeController.addEmployee(employee) đã được gọi và thành công

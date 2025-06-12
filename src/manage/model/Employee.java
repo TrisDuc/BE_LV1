@@ -12,6 +12,7 @@ import java.util.Objects;
  * @author 01duc
  */
 public class Employee {
+    private String ID;
     private String username;
     private String firstName;
     private String lastName;
@@ -22,13 +23,22 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String username, String firstName, String lastName, String password, String phone, String email) {
+    public Employee(String ID, String username, String firstName, String lastName, String password, String phone, String email) {
+        this.ID = ID;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.phone = phone;
         this.email = email;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     public String getUsername() {
@@ -82,6 +92,7 @@ public class Employee {
     @Override
     public String toString() {
         return "--------------------------------------------------------------------------------------\n"
+             + "ID             : " + this.getID() + "\n"
              + "Username       : " + this.getUsername() + "\n"
              + "First name     : " + this.getFirstName() + "\n"
              + "Last name      : " + this.getLastName() + "\n"
@@ -89,6 +100,7 @@ public class Employee {
              + "Phone number   : " + this.getPhone() + "\n"
              + "Email          : " + this.getEmail();
     }
+    
     // *** PHẦN QUAN TRỌNG NHẤT: OVERRIDE equals() và hashCode() ***
     @Override
     public boolean equals(Object o) {

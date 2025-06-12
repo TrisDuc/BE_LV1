@@ -55,13 +55,15 @@ public class EmployeeValidator {
      * @return A {@link ValidationResult} object containing either the validated Employee or an error message.
      */
 
-    public static Employee isValid(String username, String firstname, String lastname, String password, String phoneNumber, String email) {
+    public static Employee isValid(String size, String username, String firstname, String lastname, String password, String phoneNumber, String email) {
         String trimmedUsername = Utils.trim(username);
         String trimmedFirstname = Utils.trim(firstname);
         String trimmedLastname = Utils.trim(lastname);
         String trimmedPassword = Utils.trim(password);
         String trimmedPhoneNumber = Utils.trim(phoneNumber);
         String trimmedEmail = Utils.trim(email);
+        int newSize = Integer.parseInt(size);
+        newSize += 1;
         if (!EmployeeValidator.isValidField(trimmedUsername, "username")) {
             // In a real application, you'd throw an exception, return a detailed error object,
             // or set an error message in a UI field. Returning null is a simple way to indicate failure.
@@ -100,6 +102,6 @@ public class EmployeeValidator {
         String formattedFirstname = Utils.UpperFirstCharacter(firstname);
         String formattedLastname = Utils.UpperFirstCharacter(lastname);
         
-        return new Employee(trimmedUsername, formattedFirstname, formattedLastname, trimmedPassword, trimmedPhoneNumber, trimmedEmail);
+        return new Employee(String.format("%s", newSize), trimmedUsername, formattedFirstname, formattedLastname, trimmedPassword, trimmedPhoneNumber, trimmedEmail);
     }
 }
