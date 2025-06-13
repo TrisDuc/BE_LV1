@@ -150,7 +150,7 @@ public class Login extends javax.swing.JFrame {
         // Check login credentials
         if (username.equals(validUsername) && password.equals(validPassword)) {
             JOptionPane.showMessageDialog(null, "Login Successful!");
-            new Manageuser().setVisible(true); // Create and display the main application window
+            new ManageUserView().setVisible(true); // Create and display the main application window
             this.dispose(); // Close the current Login window
         } else {
             JOptionPane.showMessageDialog(null, "Incorrect Username or Password", "Login Failed", JOptionPane.ERROR_MESSAGE);

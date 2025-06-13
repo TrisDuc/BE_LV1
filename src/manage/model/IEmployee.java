@@ -14,12 +14,7 @@ import java.util.List;
 public interface IEmployee {
     public boolean addEmployee(Employee employee);
     
-    public boolean updateEmployee(Employee employee, String username, String firstName, String lastName, String password, String phone, String email);
-    
     public boolean deleteEmployee(int indexToDelete);
     
-    public List searchEmployeeByName(String value);
-        
-    public String passwordEncryption();
-    
+    public List searchEmployeeByName(String value);    
 }

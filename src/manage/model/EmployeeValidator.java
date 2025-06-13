@@ -54,12 +54,13 @@ public class EmployeeValidator {
      * @param email Raw email string.
      * @return A {@link ValidationResult} object containing either the validated Employee or an error message.
      */
-
-    public static Employee isValid(String size, String username, String firstname, String lastname, String password, String phoneNumber, String email) {
+   
+    public static Employee isValid(String size, String username, String firstname, String lastname, String password, String comfirmedPassword, String phoneNumber, String email) {
         String trimmedUsername = Utils.trim(username);
         String trimmedFirstname = Utils.trim(firstname);
         String trimmedLastname = Utils.trim(lastname);
         String trimmedPassword = Utils.trim(password);
+        String trimmedComfirmedPassword = Utils.trim(comfirmedPassword);
         String trimmedPhoneNumber = Utils.trim(phoneNumber);
         String trimmedEmail = Utils.trim(email);
         int newSize = Integer.parseInt(size);
@@ -85,6 +86,11 @@ public class EmployeeValidator {
         if (!EmployeeValidator.isValidField(trimmedPassword, "password")) {
             JOptionPane.showMessageDialog(null, "Password must be at least 6 characters and no spaces.", "Validation Error", JOptionPane.ERROR_MESSAGE);
             return null; // Validation failed
+        }
+        
+        if (!trimmedPassword.equals(trimmedComfirmedPassword)) {
+            JOptionPane.showMessageDialog(null, "Comfirmed password does not match password", "Validation Error", JOptionPane.ERROR_MESSAGE);
+            return null; // not match
         }
 
         if (!EmployeeValidator.isValidField(trimmedPhoneNumber, "phone")) {

@@ -21,7 +21,7 @@ public class PasswordUtils {
             // Convert bytes to hex string
             StringBuilder sb = new StringBuilder();
             for (byte b : hashedBytes) {
-                sb.append(String.format("%02x", b)); // chuyển byte thành hex
+                sb.append(String.format("%02x", b)); // change byte to hex
             }
 
             return sb.toString();

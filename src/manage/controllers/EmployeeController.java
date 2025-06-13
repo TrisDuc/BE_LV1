@@ -9,7 +9,6 @@ import manage.model.Employee;
 import manage.model.IEmployee;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -19,7 +18,6 @@ import manage.model.Utils;
  * @author 01duc
  */
 public class EmployeeController extends ArrayList<Employee> implements IEmployee{
-    public static Comparator<Employee> compareEmployeeByFirstName = Comparator.comparing(Employee::getFirstName);
     
     @Override
     public boolean addEmployee(Employee employee) {
@@ -34,73 +32,48 @@ public class EmployeeController extends ArrayList<Employee> implements IEmployee
             return result;
         }
     }
-
-    @Override
-    public boolean updateEmployee(Employee employee, String username, String firstName, String lastName, String password, String phone, String email) {
-        boolean result = false; 
-        try {
-            employee.setUsername(username);
-            employee.setFirstName(firstName);
-            employee.setLastName(lastName);
-            employee.setPassword(password);
-            employee.setPhone(phone);
-            employee.setEmail(email);
-            
-            result = true;
-        } catch (Exception e) {
-        }
-        return result;       
-    }
     
+    //Delete Employee By Index
     @Override
     public boolean deleteEmployee(int idToDelete) {
         Iterator<Employee> iterator = this.iterator();
         while (iterator.hasNext()) {
             Employee emp = iterator.next();
-            if (Integer.parseInt(emp.getID()) == idToDelete) { // So sánh ID
-                iterator.remove(); // Xóa đối tượng Employee
-                return true; // Đã xóa thành công
+            if (Integer.parseInt(emp.getID()) == idToDelete) {
+                iterator.remove(); // Remove Employee Object based on ID
+                return true; // return message true
             }
         }
-        return false; // Không tìm thấy Employee với ID này
+        return false; // Cannot find Employee ID
     }
-
 
     @Override
     public List<Employee> searchEmployeeByName(String value) {
         List arr = new ArrayList();
         for (Employee i : this) {
+            //Compare value to string including first name and last name
             String firstLastName = i.getFirstName().toLowerCase() + i.getLastName().toLowerCase();
             if (firstLastName.contains(value)) {
                 arr.add(i);
             }
         }
-        
         return arr;
     }
 
-    @Override
-    public String passwordEncryption() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
     public boolean writeDataToFile() {
-        return Utils.writeListToTextFile("Employee.txt", this); // this là List<Employee>
+        return Utils.writeListToTextFile("Employee.txt", this); // this is List<Employee>
     }
 
 
     public void readEmployee() {
         this.clear();
         List<Employee> list = Utils.readListFromTextFile("Employee.txt");
-        this.addAll(list); // this là một danh sách Employee
+        this.addAll(list); // this is a Employee List
     }
-
-    public void sortbyFirdtname() {
-        Collections.sort(this, EmployeeController.compareEmployeeByFirstName);
-    }    
     
+    //Function to decrease ID when an employee is deleted
     public void changeOrder(int idRemoved) {
-        System.out.println(this.size());
         for (int i = idRemoved - 1; i < this.size(); i++) {
             this.get(i).setID(String.format("%s", i + 1));
         }

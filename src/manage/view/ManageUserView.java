@@ -5,129 +5,39 @@
  */
 package manage.view;
 
-import java.awt.BorderLayout;
-import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import manage.controllers.EmployeeController;
+import manage.controllers.ManageUserController;
 import manage.model.Employee;
-import manage.model.Utils;
 import manage.model.CustomTableEmployee;
 import manage.model.TableEditListener; 
 /**
  *
  * @author 01duc
  */
-public class Manageuser extends javax.swing.JFrame implements TableEditListener{
-    EmployeeController employeeController = new EmployeeController();
-    
+public class ManageUserView extends javax.swing.JFrame implements TableEditListener{
+    private EmployeeController employeeController;
     private CustomTableEmployee customTableModel;
-    
-    public Manageuser() {
-        initComponents(); // Khởi tạo tất cả các thành phần UI trước
+    private ManageUserController manageUserController;
+
+    public ManageUserView() {
+        // Initialize Model
+        employeeController = new EmployeeController();
+        // Initialize Controller and pass View and Model to it
+        manageUserController = new ManageUserController(this, employeeController);
+
+        initComponents(); // Initialize all UI components first
         setLocationRelativeTo(null);
-        
-        // QUAN TRỌNG: Đặt customTableModel thành model của JTable của bạn
-        // Dòng này phải đứng SAU initComponents() đã đặt model
+
         customTableModel = (CustomTableEmployee) tableEmployee.getModel();
-        // Đăng ký thể hiện Manageuser này làm listener cho các chỉnh sửa bảng
-        customTableModel.setTableEditListener(this);
-        
-        loadEmployeeData(); // Gọi tải dữ liệu sau khi các thành phần được khởi tạo
+        customTableModel.setTableEditListener(this); // View remains the listener for CustomTableEmployee
+
+        // Request Controller to load and display initial data
+        manageUserController.initializeData();
     }
 
-    // Phương thức này sẽ được CustomTableEmployee gọi khi một ô được chỉnh sửa thành công
-    @Override
-    public void onCellEdited(int row, int column, Object newValue) {
-        // 1. Lấy đối tượng Employee gốc từ danh sách của employeeController
-        // Lưu ý: Chỉ số hàng trong JTable tương ứng với chỉ số trong danh sách của employeeController
-        if (row >= 0 && row < employeeController.size()) {
-            Employee employeeToUpdate = employeeController.get(row);
-            String columnName = customTableModel.getColumnName(column); // Lấy tên cột
-
-            // 2. Cập nhật trường cụ thể của đối tượng Employee
-            switch (columnName) {
-                case "Username":
-                    employeeToUpdate.setUsername((String) newValue);
-                    break;
-                case "First Name":
-                    employeeToUpdate.setFirstName((String) newValue);
-                    break;
-                case "Last Name":
-                    employeeToUpdate.setLastName((String) newValue);
-                    break;
-                case "Phone":
-                    employeeToUpdate.setPhone((String) newValue);
-                    break;
-                case "Email":
-                    employeeToUpdate.setEmail((String) newValue);
-                    break;
-                // Thêm các trường hợp cho các cột có thể chỉnh sửa khác nếu cần
-                default:
-                    // Nếu bạn có các cột không chuẩn, hãy xử lý chúng ở đây hoặc không làm gì
-                    break;
-            }
-            
-            // Tùy chọn: Bạn có thể muốn cung cấp phản hồi ngay lập tức cho người dùng
-            // JOptionPane.showMessageDialog(this, "Dữ liệu nhân viên đã được cập nhật cục bộ cho " + columnName + ".", "Cập nhật thành công", JOptionPane.INFORMATION_MESSAGE);
-            // Đây chỉ là một bản cập nhật cục bộ. Việc lưu tệp thực tế xảy ra khi nút "Save" được nhấp.
-
-            // Bản thân bảng đã được cập nhật bởi setValueAt, vì vậy không cần gọi updateDataToTable() ở đây
-            // trừ khi bạn có sự phụ thuộc lẫn nhau phức tạp.
-        } else {
-            System.err.println("Lỗi: Chỉ số hàng nằm ngoài giới hạn trong employeeController trong quá trình cập nhật.");
-        }
-    }
-
-    // HÀM ĐỂ NẠP DỮ LIỆU VÀO JTABLE
-    private void loadEmployeeData() {
-        // Get the model that was already set up by initComponents()
-        DefaultTableModel model = (DefaultTableModel) tableEmployee.getModel();
-
-        // Clear existing rows in the table
-        model.setRowCount(0);
-
-        employeeController.readEmployee();
-
-        // Populate the model with employee data
-        for (Employee emp : employeeController) {
-            Object[] row = {
-                emp.getID(),
-                emp.getUsername(),
-                emp.getFirstName(),
-                emp.getLastName(),
-                emp.getPhone(),
-                emp.getEmail()
-            };
-            model.addRow(row); // Add the row to the table model
-        }
-    }
-
-    private void updateDataToTable(EmployeeController employeeController) {
-        // Get the model that was already set up by initComponents()
-        DefaultTableModel model = (DefaultTableModel) tableEmployee.getModel();
-
-        // Clear existing rows in the table
-        model.setRowCount(0);
-
-        // Populate the model with employee data
-        for (Employee emp : employeeController) {
-            Object[] row = {
-                emp.getID(),
-                emp.getUsername(),
-                emp.getFirstName(),
-                emp.getLastName(),
-                emp.getPhone(),
-                emp.getEmail()
-            };
-            model.addRow(row); // Add the row to the table model
-        }
-    } 
-    
-    private void updateSearchDataToTable(List<Employee> employees) {
+    public void updateTable(List<Employee> employees) {
         // Get the model that was already set up by initComponents()
         DefaultTableModel model = (DefaultTableModel) tableEmployee.getModel();
 
@@ -146,7 +56,39 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
             };
             model.addRow(row); // Add the row to the table model
         }
-    } 
+    }
+
+    public void updateSearchTable(List<Employee> searchResult) {
+        // Get the model that was already set up by initComponents()
+        DefaultTableModel model = (DefaultTableModel) tableEmployee.getModel();
+
+        // Clear existing rows in the table
+        model.setRowCount(0);
+
+        // Populate the model with employee data
+        for (Employee emp : searchResult) {
+            Object[] row = {
+                emp.getID(),
+                emp.getUsername(),
+                emp.getFirstName(),
+                emp.getLastName(),
+                emp.getPhone(),
+                emp.getEmail()
+            };
+            model.addRow(row); // Add the row to the table model
+        }
+    }
+
+    public CustomTableEmployee getCustomTableModel() {
+        return customTableModel;
+    }
+
+    @Override
+    public void onCellEdited(int row, int column, Object newValue) {
+        // View receives notification from CustomTableEmployee
+        // Then delegates this action to the Controller to handle Model update logic
+        manageUserController.onCellEdited(row, column, newValue);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -165,7 +107,7 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
         btnSave = new javax.swing.JButton();
         btnLogout = new javax.swing.JButton();
         btnReset = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
         txtNameSearch = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -231,12 +173,12 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
-        jButton1.setText("Search");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSearch.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/search.png"))); // NOI18N
+        btnSearch.setText("Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSearchActionPerformed(evt);
             }
         });
 
@@ -260,7 +202,7 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
                             .addGap(47, 47, 47)
                             .addComponent(btnLogout))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 780, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton1))
+                        .addComponent(btnSearch))
                     .addComponent(txtNameSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 670, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -270,7 +212,7 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
                 .addGap(61, 61, 61)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNameSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -289,95 +231,36 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
     }// </editor-fold>//GEN-END:initComponents
       
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        int save = JOptionPane.showConfirmDialog(null, "Do you want to save?", "Selection", JOptionPane.YES_NO_OPTION);
-        if (save == 0) {
-            employeeController.writeDataToFile();
-            JOptionPane.showMessageDialog(this, "Save successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
-        }
+        manageUserController.handleSaveAction(); // Delegate to Controller
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        loadEmployeeData();
+        manageUserController.handleResetAction();
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        // Truyền tham chiếu 'this' (chính là Manageuser hiện tại) vào constructor của addNewEmployee
-        addNewEmployee addNewEmployee1Frame = new addNewEmployee(this);
-        addNewEmployee1Frame.setVisible(true);
+        manageUserController.handleAddAction();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        // TODO add your handling code here:
-        int selectedRow = tableEmployee.getSelectedRow(); // Lấy chỉ số của hàng được chọn
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Please select an employee to delete.", "No Employee Selected", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        // Lấy Username từ cột "Username" 
-        String idToDelete = (String) tableEmployee.getModel().getValueAt(selectedRow, 0);
-        String usernameToDelete = (String) tableEmployee.getModel().getValueAt(selectedRow, 1); // Lấy username để hiển thị trong thông báo
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete employee: " + usernameToDelete + "(ID: " + idToDelete + ")?",
-                "Confirm Delete", JOptionPane.YES_NO_OPTION);
-
-        if (confirm == JOptionPane.YES_OPTION) {
-            boolean deleted = employeeController.deleteEmployee(Integer.parseInt(idToDelete));
-
-            if (deleted) {
-                employeeController.changeOrder(Integer.parseInt(idToDelete));
-                JOptionPane.showMessageDialog(this, "Employee '" + usernameToDelete + "' deleted successfully!", "Deletion Successful", JOptionPane.INFORMATION_MESSAGE);
-                updateDataToTable(employeeController); // Cập nhật lại bảng sau khi xóa
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to delete employee '" + usernameToDelete + "'. Employee not found.", "Deletion Failed", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+        int selectedRow = tableEmployee.getSelectedRow(); // Get index of selected Row
+        manageUserController.handleDeleteAction(selectedRow);
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
-        // TODO add your handling code here:
-        int out = JOptionPane.showConfirmDialog(null, "Do you want to logout?", "Selection", JOptionPane.YES_NO_OPTION);
-        if (out == 0){
-            new Login().setVisible(true);
-            this.dispose();
-        }
+        manageUserController.handleLogoutAction();
     }//GEN-LAST:event_btnLogoutActionPerformed
-
-    public void addNewEmployeeToList(Employee employee) {
-        boolean result = employeeController.addEmployee(employee);
-        if (result == true) {
-            updateDataToTable(employeeController);
-            JOptionPane.showMessageDialog(this, "Employee '" + employee.getUsername() + "' added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-    
-    public int getNumEmployee() {
-        return employeeController.size();
-    }
-    
     
     private void tableEmployeeComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_tableEmployeeComponentShown
-        // TODO add your handling code here:
-        try {
-            loadEmployeeData();
-        } catch (Exception e) {
-            JOptionPane.showConfirmDialog(null, e);
-        }
+        // When the component is shown, request the Controller to reload data (just to be sure)
+        manageUserController.initializeData(); 
     }//GEN-LAST:event_tableEmployeeComponentShown
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         String keywords = txtNameSearch.getText();
         
-        List<Employee> searchList = employeeController.searchEmployeeByName(keywords);
-        
-        if (searchList.isEmpty()) {
-            System.out.println("Empty");
-            updateDataToTable(employeeController);
-        } else {
-            updateSearchDataToTable(searchList);
-        } 
-    }//GEN-LAST:event_jButton1ActionPerformed
+        manageUserController.handleSearchAction(keywords);
+    }//GEN-LAST:event_btnSearchActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -393,20 +276,23 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Manageuser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageUserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Manageuser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageUserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Manageuser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageUserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Manageuser.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ManageUserView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Manageuser().setVisible(true);
+                new ManageUserView().setVisible(true);
             }
         });
     }
@@ -417,7 +303,7 @@ public class Manageuser extends javax.swing.JFrame implements TableEditListener{
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnSave;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tableEmployee;
     private javax.swing.JTextField txtNameSearch;

@@ -10,7 +10,7 @@ package manage.model;
  * @author 01duc
  */
 public interface TableEditListener {
-    // Phương thức này sẽ được gọi khi một ô được chỉnh sửa và xác thực thành công.
-    // Nó truyền chỉ số hàng, chỉ số cột và giá trị mới.
+    // This method will be called when a cell is successfully edited and validated. 
+    // It passes the row index, column index and new value.
     void onCellEdited(int row, int column, Object newValue);
 }

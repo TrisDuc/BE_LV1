@@ -6,7 +6,7 @@ import java.util.regex.Pattern; // Matcher is not directly used in this class, s
 
 public class CustomTableEmployee extends DefaultTableModel {
 
-    // Regex patterns (chỉ khai báo một lần duy nhất)
+    // Regex patterns
     private static final String USERNAME_REGEX = "^[^\\s]{5,}$"; // Username: at least 5 chars, no spaces
     private static final String FIRSTNAME_REGEX = "^[A-Za-z]{2,25}$"; // First name: only letters, 2-25 chars
     private static final String LASTNAME_REGEX = "^[A-Za-z]{2,25}$"; // Last name: only letters, 2-25 chars
@@ -23,7 +23,6 @@ public class CustomTableEmployee extends DefaultTableModel {
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
 
-    // Thêm một trường để giữ listener
     private TableEditListener tableEditListener;
 
     // Constructor
@@ -50,82 +49,80 @@ public class CustomTableEmployee extends DefaultTableModel {
     @Override
     public boolean isCellEditable(int row, int column) {
         String columnName = getColumnName(column);
-        // "ID" không thể chỉnh sửa. Nếu bạn cũng có cột "Password" trong bảng,
-        // bạn có thể muốn làm cho nó không thể chỉnh sửa hoặc xử lý xác thực riêng.
+        // "ID" is not editable. 
         return !columnName.equalsIgnoreCase("ID");
     }
 
     @Override
     public void setValueAt(Object aValue, int row, int column) {
         String columnName = getColumnName(column);
-        // Quan trọng: Lấy giá trị cũ trước khi cố gắng đặt giá trị mới.
-        // Điều này rất quan trọng nếu xác thực thất bại và bạn cần hoàn nguyên.
+        // Important: Get the old value before attempting to set the new value.
+        // This is crucial if validation fails and you need to revert.
         Object oldValue = getValueAt(row, column);
 
         String newValue;
-        // Xử lý giá trị null để tránh NullPointerException
+        // Handle null values to avoid NullPointerExceptions
         if (aValue != null) {
             newValue = Utils.trim(aValue.toString());
         } else {
-            newValue = ""; // Hoặc xử lý phù hợp với xác thực của bạn
+            newValue = ""; // Or handle as appropriate for your validation
         }
 
-
-        boolean validationSuccess = true; // Cờ để theo dõi xác thực
+        boolean validationSuccess = true; // Flag to track validation
         String errorMessage = "";
 
         switch (columnName) {
             case "Username":
                 if (!isValidPattern(newValue, USERNAME_PATTERN)) {
-                    errorMessage = "Username phải có ít nhất 5 ký tự và không có khoảng trắng cho hàng " + (row + 1) + ".";
+                    errorMessage = "Username must be at least 5 characters long and contain no spaces for row " + (row + 1) + ".";
                     validationSuccess = false;
                 }
                 break;
             case "First Name":
                 if (!isValidPattern(newValue, FIRSTNAME_PATTERN)) {
-                    errorMessage = "First Name phải có 2-25 chữ cái cho hàng " + (row + 1) + ".";
+                    errorMessage = "First Name must contain 2-25 letters for row " + (row + 1) + ".";
                     validationSuccess = false;
                 } else {
-                    newValue = Utils.UpperFirstCharacter(newValue); // Áp dụng định dạng nếu hợp lệ
+                    newValue = Utils.UpperFirstCharacter(newValue); // Apply formatting if valid
                 }
                 break;
             case "Last Name":
                 if (!isValidPattern(newValue, LASTNAME_PATTERN)) {
-                    errorMessage = "Last Name phải có 2-25 chữ cái cho hàng " + (row + 1) + ".";
+                    errorMessage = "Last Name must contain 2-25 letters for row " + (row + 1) + ".";
                     validationSuccess = false;
                 } else {
-                    newValue = Utils.UpperFirstCharacter(newValue); // Áp dụng định dạng nếu hợp lệ
+                    newValue = Utils.UpperFirstCharacter(newValue); // Apply formatting if valid
                 }
                 break;
             case "Phone":
                 if (!isValidPattern(newValue, PHONE_PATTERN)) {
-                    errorMessage = "Số điện thoại phải có 10 chữ số và định dạng Việt Nam hợp lệ cho hàng " + (row + 1) + ".";
+                    errorMessage = "Phone number must have 10 digits and a valid Vietnamese format for row " + (row + 1) + ".";
                     validationSuccess = false;
                 }
                 break;
             case "Email":
                 if (!isValidPattern(newValue, EMAIL_PATTERN)) {
-                    errorMessage = "Định dạng email không hợp lệ cho hàng " + (row + 1) + ".";
+                    errorMessage = "Invalid email format for row " + (row + 1) + ".";
                     validationSuccess = false;
                 }
                 break;
-            // Không cần trường hợp default nếu tất cả các cột có thể chỉnh sửa được xử lý ở trên.
-            // Nếu có các cột có thể chỉnh sửa khác, chúng sẽ đi qua đây mà không có xác thực.
+            // No default case needed if all editable columns are handled above.
+            // If there are other editable columns, they will pass through here without validation.
         }
 
         if (validationSuccess) {
-            // Chỉ cập nhật giá trị của model nếu xác thực thành công
+            // Only update the model's value if validation is successful
             super.setValueAt(newValue, row, column);
 
-            // Thông báo cho listener rằng ô đã được chỉnh sửa thành công
+            // Notify the listener that the cell has been successfully edited
             if (tableEditListener != null) {
                 tableEditListener.onCellEdited(row, column, newValue);
             }
         } else {
-            // Nếu xác thực thất bại, hiển thị thông báo lỗi.
-            JOptionPane.showMessageDialog(null, errorMessage, "Lỗi xác thực", JOptionPane.ERROR_MESSAGE);
-            // Quan trọng, hoàn nguyên giá trị ô hiển thị về giá trị cũ của nó.
-            // Nếu không, văn bản không hợp lệ vẫn còn trong ô, điều này không tốt cho trải nghiệm người dùng.
+            // If validation fails, display an error message.
+            JOptionPane.showMessageDialog(null, errorMessage, "Validation Error", JOptionPane.ERROR_MESSAGE);
+            // Important: revert the displayed cell value to its old value.
+            // Otherwise, the invalid text remains in the cell, which is bad for user experience.
             super.setValueAt(oldValue, row, column);
         }
     }
